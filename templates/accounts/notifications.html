@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudySphere | Notifications</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 30px 15px;
+            color: #243047;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.07);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #3157c8;
+        }
+
+        .notification {
+            padding: 16px;
+            margin: 12px 0;
+            border-radius: 10px;
+            background: #f1f5ff;
+            border-left: 4px solid #3157c8;
+        }
+
+        .read {
+            background: #f7f8fa;
+            border-left-color: #cbd2df;
+        }
+
+        .date {
+            display: block;
+            margin-top: 8px;
+            color: #687386;
+            font-size: 12px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        button, .back {
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        button {
+            background: #3157c8;
+            color: white;
+        }
+
+        .back {
+            background: #e9edf5;
+            color: #243047;
+        }
+
+        .empty {
+            color: #687386;
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔔 Notifications</h1>
+
+        <p>Unread notifications: <strong>{{ unread_count }}</strong></p>
+
+        <div class="actions">
+            <a class="back" href="{% url 'dashboard' %}">← Dashboard</a>
+
+            {% if unread_count > 0 %}
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit">Mark all as read</button>
+            </form>
+            {% endif %}
+        </div>
+
+        {% for notification in notifications %}
+            <div class="notification {% if notification.is_read %}read{% endif %}">
+                <strong>{{ notification.message }}</strong>
+                <span class="date">
+                    {{ notification.created_at|date:"d M Y, h:i A" }}
+                    {% if not notification.is_read %} · New{% endif %}
+                </span>
+            </div>
+        {% empty %}
+            <p class="empty">No notifications yet. When a student follows you, it will appear here.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

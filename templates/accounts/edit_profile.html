@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | StudySphere</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eef2ff, #f8fafc);
+            color: #1f2937;
+            min-height: 100vh;
+            padding: 25px 16px;
+        }
+
+        nav {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+        }
+
+        .brand { font-size: 23px; font-weight: bold; color: #4f46e5; }
+        nav a { color: #4f46e5; text-decoration: none; font-weight: bold; }
+
+        .card {
+            max-width: 720px;
+            margin: 30px auto;
+            background: white;
+            padding: 35px;
+            border: 1px solid #e5e7eb;
+            border-radius: 22px;
+            box-shadow: 0 15px 45px #25305b12;
+        }
+
+        .heading { text-align: center; margin-bottom: 28px; }
+        .heading h1 { margin: 0 0 10px; color: #3730a3; font-size: 29px; }
+        .heading p { margin: 0; color: #6b7280; line-height: 1.6; }
+
+        .avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            margin: 0 auto 18px;
+            background: #e0e7ff;
+            color: #4338ca;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 35px;
+            font-weight: bold;
+            overflow: hidden;
+            border: 4px solid #eef2ff;
+        }
+
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .section-title {
+            font-size: 17px;
+            margin: 28px 0 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #3730a3;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 18px;
+        }
+
+        .full { grid-column: 1 / -1; }
+
+        label {
+            display: block;
+            margin: 17px 0 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font: inherit;
+            color: #1f2937;
+            background: white;
+            outline: none;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px #6366f120;
+        }
+
+        textarea { min-height: 110px; resize: vertical; line-height: 1.6; }
+
+        .hint, .counter { color: #6b7280; font-size: 12px; margin-top: 7px; line-height: 1.5; }
+        .counter { text-align: right; }
+
+        .messages { margin-bottom: 15px; }
+        .message {
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: #eef2ff;
+            color: #3730a3;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+
+        button, .back {
+            flex: 1;
+            min-width: 130px;
+            text-align: center;
+            padding: 13px 18px;
+            border: 0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button { background: #4f46e5; color: white; }
+        button:hover { background: #4338ca; }
+        .back { background: #eef2ff; color: #4338ca; }
+        .back:hover { background: #dbe4ff; }
+
+        @media (max-width: 550px) {
+            .card { padding: 25px 19px; }
+            .heading h1 { font-size: 25px; }
+            .grid { grid-template-columns: 1fr; }
+            .full { grid-column: auto; }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="brand">StudySphere</div>
+        <a href="{% url 'profile' %}">My Profile</a>
+    </nav>
+
+    <main class="card">
+        <div class="heading">
+            <div class="avatar" id="avatarPreview">
+                {% if profile.uploaded_photo %}
+                    <img src="{{ profile.uploaded_photo.url }}" alt="Profile photo">
+                {% elif profile.profile_image %}
+                    <img src="{{ profile.profile_image }}" alt="Profile photo">
+                {% else %}
+                    {{ request.user.username|first|upper }}
+                {% endif %}
+            </div>
+
+            <h1>Edit Your Profile</h1>
+            <p>Personalize your profile and introduce yourself to the StudySphere community.</p>
+        </div>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <h2 class="section-title">Personal Information</h2>
+
+            <div class="grid">
+                <div class="full">
+                    <label for="name">Display Name *</label>
+                    <input id="name" name="name" type="text"
+                           value="{{ profile.name }}" maxlength="100" required
+                           placeholder="Enter your display name">
+                </div>
+
+                <div class="full">
+                    <label for="bio">About You</label>
+                    <textarea id="bio" name="bio" maxlength="500"
+                              placeholder="Share your interests and learning goals...">{{ profile.bio }}</textarea>
+                    <div class="counter"><span id="bioCount">0</span>/500 characters</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Profile Photo</h2>
+
+            <label for="uploaded_photo">Upload from your computer</label>
+            <input id="uploaded_photo" name="uploaded_photo" type="file"
+                   accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+            <p class="hint">JPG, PNG or WEBP. Maximum size: 5 MB.</p>
+
+            <label for="profile_image">Or use a Profile Photo URL</label>
+            <input id="profile_image" name="profile_image" type="url"
+                   value="{{ profile.profile_image }}"
+                   placeholder="https://example.com/photo.jpg">
+            <p class="hint">Upload a photo or provide a public image URL.</p>
+
+            <h2 class="section-title">Education</h2>
+
+            <div class="grid">
+                <div class="full">
+                    <label for="college">College / University</label>
+                    <input id="college" name="college" type="text"
+                           value="{{ profile.college|default:'' }}"
+                           maxlength="200" placeholder="Enter your college name">
+                </div>
+
+                <div>
+                    <label for="branch">Branch / Course</label>
+                    <input id="branch" name="branch" type="text"
+                           value="{{ profile.branch|default:'' }}"
+                           maxlength="100" placeholder="e.g. Computer Science">
+                </div>
+
+                <div>
+                    <label for="study_year">Study Year</label>
+                    <input id="study_year" name="study_year" type="text"
+                           value="{{ profile.study_year|default:'' }}"
+                           maxlength="50" placeholder="e.g. Third Year">
+                </div>
+            </div>
+
+            <h2 class="section-title">Skills & Interests</h2>
+
+            <label for="skills">Skills</label>
+            <input id="skills" name="skills" type="text"
+                   value="{{ profile.skills|default:'' }}"
+                   maxlength="300"
+                   placeholder="Java, Django, Web Development">
+            <p class="hint">Separate multiple skills with commas.</p>
+
+            <div class="actions">
+                <button type="submit">Save Changes</button>
+                <a class="back" href="{% url 'profile' %}">Cancel</a>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        const bioInput = document.getElementById("bio");
+        const bioCount = document.getElementById("bioCount");
+        const imageInput = document.getElementById("profile_image");
+        const fileInput = document.getElementById("uploaded_photo");
+        const avatar = document.getElementById("avatarPreview");
+        const fallbackLetter = "{{ request.user.username|first|upper|escapejs }}";
+
+        function updateBioCount() {
+            bioCount.textContent = bioInput.value.length;
+        }
+
+        function showImage(src) {
+            const image = new Image();
+            image.alt = "Profile photo preview";
+
+            image.onload = () => avatar.replaceChildren(image);
+            image.onerror = () => {
+                avatar.replaceChildren();
+                avatar.textContent = fallbackLetter;
+            };
+
+            image.src = src;
+        }
+
+        imageInput.addEventListener("input", () => {
+            const url = imageInput.value.trim();
+
+            if (url.startsWith("https://") || url.startsWith("http://")) {
+                showImage(url);
+            }
+        });
+
+        fileInput.addEventListener("change", () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+                alert("Please select a JPG, PNG or WEBP image.");
+                fileInput.value = "";
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert("Photo must be 5 MB or smaller.");
+                fileInput.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = event => {
+                avatar.replaceChildren();
+                const image = new Image();
+                image.alt = "Selected profile photo";
+                image.src = event.target.result;
+                avatar.appendChild(image);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        bioInput.addEventListener("input", updateBioCount);
+        updateBioCount();
+    </script>
+</body>
+</html>

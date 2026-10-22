@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookmarks | StudySphere</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f6ff;
+            color: #252344;
+        }
+
+        nav {
+            background: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid #e8e8f5;
+        }
+
+        .brand {
+            color: #5145cd;
+            font-size: 23px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .back {
+            color: #5145cd;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .eyebrow {
+            color: #6357d8;
+            font-size: 12px;
+            letter-spacing: 2px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: clamp(28px, 5vw, 36px);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #77758f;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .post {
+            background: white;
+            border: 1px solid #eae9fa;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 18px;
+            box-shadow: 0 5px 20px #39327b0a;
+        }
+
+        .subject {
+            display: inline-block;
+            color: #5145cd;
+            background: #efedff;
+            border-radius: 20px;
+            padding: 6px 11px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .post h2 {
+            font-size: 21px;
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .content {
+            color: #66647d;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+            margin-bottom: 16px;
+        }
+
+        .meta {
+            color: #89879c;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .resource-link {
+            display: inline-block;
+            margin: 0 14px 12px 0;
+            color: #5145cd;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .resource-link:hover,
+        .back:hover {
+            text-decoration: underline;
+        }
+
+        .empty {
+            background: white;
+            padding: 35px 24px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid #eae9fa;
+        }
+
+        .empty h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty p {
+            color: #77758f;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 18px;
+            background: #5145cd;
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        footer {
+            text-align: center;
+            color: #89879c;
+            padding: 28px 15px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 520px) {
+            nav {
+                padding: 16px 5%;
+            }
+
+            .brand {
+                font-size: 19px;
+            }
+
+            .container {
+                margin: 28px auto;
+                padding: 0 14px;
+            }
+
+            .post {
+                padding: 19px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <a class="brand" href="{% url 'home' %}">StudySphere</a>
+    <a class="back" href="{% url 'home' %}">← Back to Home</a>
+</nav>
+
+<main class="container">
+
+    <p class="eyebrow">Your Personal Library</p>
+    <h1>⭐ My Bookmarks</h1>
+    <p class="subtitle">
+        Your saved study resources, all in one place.
+    </p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p class="subtitle">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% for bookmark in bookmarks %}
+        <article class="post">
+
+            <span class="subject">
+                {{ bookmark.post.subject|default:"General" }}
+            </span>
+
+            <h2>{{ bookmark.post.title }}</h2>
+
+            <p class="content">
+                {{ bookmark.post.content|linebreaksbr }}
+            </p>
+
+            <p class="meta">
+                Shared by {{ bookmark.post.author_name }}
+                · Saved {{ bookmark.created_at|date:"d M Y" }}
+            </p>
+
+            {% if bookmark.post.notes_file %}
+                <a class="resource-link"
+                   href="{{ bookmark.post.notes_file.url }}"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    View PDF ↗
+                </a>
+
+                <a class="resource-link"
+                   href="{{ bookmark.post.notes_file.url }}"
+                   download>
+                    Download PDF ↓
+                </a>
+            {% endif %}
+
+            <form method="POST"
+                  action="{% url 'toggle_bookmark' bookmark.post.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="my_bookmarks">
+
+                <button class="button" type="submit">
+                    Remove Bookmark
+                </button>
+            </form>
+
+        </article>
+    {% empty %}
+        <section class="empty">
+            <h2>No bookmarks yet</h2>
+            <p>
+                Explore study posts and save useful resources here.
+            </p>
+            <a class="button" href="{% url 'home' %}">
+                Explore Study Resources
+            </a>
+        </section>
+    {% endfor %}
+
+</main>
+
+<footer>
+    © 2026 StudySphere · Learn Together. Grow Together.
+</footer>
+
+</body>
+</html>

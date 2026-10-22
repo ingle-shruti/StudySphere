@@ -1,0 +1,365 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Post | StudySphere</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f6ff;
+            color: #252344;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: #fff;
+            padding: 18px 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            border-bottom: 1px solid #e8e8f5;
+        }
+
+        .brand {
+            font-size: 23px;
+            font-weight: 800;
+            color: #5145cd;
+            text-decoration: none;
+        }
+
+        .nav-link {
+            color: #5145cd;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 42px auto;
+            padding: 0 20px;
+        }
+
+        .heading {
+            margin-bottom: 24px;
+        }
+
+        .eyebrow {
+            color: #6357d8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: clamp(27px, 5vw, 36px);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #77758f;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: #fff;
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px #39327b0d;
+            border: 1px solid #eae9fa;
+        }
+
+        .field {
+            margin-bottom: 23px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 9px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #deddf0;
+            border-radius: 10px;
+            font: inherit;
+            color: #252344;
+            background: #fff;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        textarea {
+            min-height: 180px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #6357d8;
+            box-shadow: 0 0 0 3px #6357d81a;
+        }
+
+        .hint {
+            color: #85839a;
+            font-size: 12px;
+            margin-top: 7px;
+            line-height: 1.5;
+        }
+
+        .file-box {
+            background: #f8f7ff;
+            border: 1px dashed #c9c5f0;
+            padding: 17px;
+            border-radius: 12px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            margin-top: 8px;
+            font: inherit;
+            font-size: 13px;
+        }
+
+        .current-file {
+            margin-bottom: 12px;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .current-file a {
+            color: #5145cd;
+            font-weight: 600;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 10px;
+            padding: 13px 21px;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            color: #fff;
+            background: #5145cd;
+        }
+
+        .btn-primary:hover {
+            background: #4035b5;
+        }
+
+        .btn-secondary {
+            color: #5145cd;
+            background: #efedff;
+        }
+
+        .notice {
+            padding: 13px 15px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .notice-error {
+            color: #a32119;
+            background: #fff0ef;
+            border: 1px solid #ffd2ce;
+        }
+
+        .notice-success {
+            color: #17653b;
+            background: #eaf8ef;
+            border: 1px solid #bce8cb;
+        }
+
+        footer {
+            text-align: center;
+            color: #89879c;
+            padding: 25px 15px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 520px) {
+            nav {
+                padding: 16px 5%;
+            }
+
+            .brand {
+                font-size: 19px;
+            }
+
+            .container {
+                margin: 28px auto;
+                padding: 0 14px;
+            }
+
+            .card {
+                padding: 21px 17px;
+            }
+
+            .actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <a class="brand" href="{% url 'home' %}">StudySphere</a>
+    <a class="nav-link" href="{% url 'my_posts' %}">My Posts</a>
+</nav>
+
+<main class="container">
+
+    <div class="heading">
+        <p class="eyebrow">Your Learning Space</p>
+        <h1>Edit Study Post</h1>
+        <p class="subtitle">
+            Update your study resource and keep your learning community informed.
+        </p>
+    </div>
+
+    <section class="card">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="notice {% if message.tags == 'success' %}notice-success{% else %}notice-error{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if error %}
+            <div class="notice notice-error" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="field">
+                <label for="title">Post Title *</label>
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value="{{ post.title }}"
+                    maxlength="200"
+                    placeholder="e.g. Data Structures Revision Notes"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <label for="subject">Subject</label>
+                <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    value="{{ post.subject }}"
+                    maxlength="100"
+                    placeholder="e.g. Java, DBMS, Computer Networks"
+                >
+            </div>
+
+            <div class="field">
+                <label for="content">Description / Study Content *</label>
+                <textarea
+                    id="content"
+                    name="content"
+                    placeholder="Write useful information for other students..."
+                    required
+                >{{ post.content }}</textarea>
+            </div>
+
+            <div class="field">
+                <label for="notes_file">Study Notes PDF</label>
+
+                <div class="file-box">
+                    {% if post.notes_file %}
+                        <p class="current-file">
+                            <strong>Current file:</strong>
+                            <a href="{{ post.notes_file.url }}"
+                               target="_blank"
+                               rel="noopener noreferrer">
+                                View current PDF
+                            </a>
+                        </p>
+                    {% else %}
+                        <p class="current-file">
+                            No PDF uploaded currently.
+                        </p>
+                    {% endif %}
+
+                    <label for="notes_file">
+                        Choose a replacement PDF (optional)
+                    </label>
+
+                    <input
+                        type="file"
+                        id="notes_file"
+                        name="notes_file"
+                        accept=".pdf,application/pdf"
+                    >
+
+                    <p class="hint">
+                        Leave empty to keep the existing PDF.
+                        Maximum file size: 10 MB.
+                    </p>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn btn-primary">
+                    Save Changes
+                </button>
+
+                <a href="{% url 'my_posts' %}"
+                   class="btn btn-secondary">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+    </section>
+
+</main>
+
+<footer>
+    © 2026 StudySphere · Learn Together. Grow Together.
+</footer>
+
+</body>
+</html>

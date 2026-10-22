@@ -1,0 +1,15 @@
+```css
+/* Fix: Make View Details button smaller */
+a.action-button {
+    display: inline-flex !important;
+    width: fit-content !important;
+    min-width: 0 !important;
+    max-width: fit-content !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+    flex: 0 0 auto !important;
+    box-sizing: border-box !important;
+}

@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }} | StudySphere</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7ff;
+            color: #172554;
+        }
+
+        header {
+            background: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px #17255410;
+        }
+
+        .brand {
+            color: #4f46e5;
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        a { text-decoration: none; }
+
+        header a, .back {
+            color: #4f46e5;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 950px;
+            margin: 35px auto;
+            padding: 16px;
+        }
+
+        h1 { margin-bottom: 8px; }
+
+        .subtitle { color: #64748b; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 6px 24px #17255408;
+        }
+
+        .avatar, .initial {
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 12px;
+        }
+
+        .initial {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e0e7ff;
+            color: #4338ca;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .bio {
+            color: #64748b;
+            overflow-wrap: anywhere;
+            min-height: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            border: 0;
+            border-radius: 10px;
+            padding: 11px 20px;
+            background: #4f46e5;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn:hover { background: #3730a3; }
+
+        .empty {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            color: #64748b;
+            text-align: center;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <a class="brand" href="{% url 'home' %}">StudySphere</a>
+    <a href="{% url 'profile' %}">My Profile</a>
+</header>
+
+<main>
+    <a class="back" href="{% url 'students_list' %}">
+        ← Discover Students
+    </a>
+
+    <h1>{{ page_title }}</h1>
+    <p class="subtitle">Connect, collaborate and learn together.</p>
+
+    <div class="grid">
+        {% for student in students %}
+            <section class="card">
+                {% if student.uploaded_photo %}
+                    <img class="avatar"
+                         src="{{ student.uploaded_photo.url }}"
+                         alt="Student photo">
+                {% elif student.profile_image %}
+                    <img class="avatar"
+                         src="{{ student.profile_image }}"
+                         alt="Student photo">
+                {% else %}
+                    <div class="initial">
+                        {{ student.name|first|upper }}
+                    </div>
+                {% endif %}
+
+                <h2>{{ student.name }}</h2>
+
+                <p class="bio">
+                    {{ student.bio|default:"StudySphere student" }}
+                </p>
+
+                {% if student.id in following_ids %}
+                    <form method="POST"
+                          action="{% url 'follow_toggle' student.id %}">
+                        {% csrf_token %}
+                        <button class="btn" type="submit">Unfollow</button>
+                    </form>
+                {% else %}
+                    <form method="POST"
+                          action="{% url 'follow_toggle' student.id %}">
+                        {% csrf_token %}
+                        <button class="btn" type="submit">Follow</button>
+                    </form>
+                {% endif %}
+            </section>
+        {% empty %}
+            <div class="empty">
+                <h3>No students here yet</h3>
+                <p>When students connect with you, their profiles will appear here.</p>
+            </div>
+        {% endfor %}
+    </div>
+</main>
+</body>
+</html>

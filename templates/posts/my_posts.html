@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Posts | StudySphere</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f3ff;
+            margin: 0;
+            padding: 30px;
+            color: #242044;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+        }
+        .post {
+            background: white;
+            padding: 20px;
+            margin: 16px 0;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #00000010;
+        }
+        .subject { color: #6254d9; font-weight: bold; }
+        .back { color: #5145cd; text-decoration: none; }
+        .empty { background: white; padding: 22px; border-radius: 12px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a class="back" href="{% url 'home' %}">← Back to Home</a>
+    <h1>My Posts</h1>
+    <p>All the study resources you have shared.</p>
+
+    {% for post in posts %}
+        <div class="post">
+            <h2>{{ post.title }}</h2>
+            <p class="subject">{{ post.subject|default:"General" }}</p>
+            <p>{{ post.content|linebreaksbr }}</p>
+
+            {% if post.notes_file %}
+                <p>
+                    <a href="{{ post.notes_file.url }}" target="_blank">View PDF</a>
+                    |
+                    <a href="{{ post.notes_file.url }}" download>Download PDF</a>
+                </p>
+            {% endif %}
+
+            <small>Posted on: {{ post.created_at|date:"d M Y, h:i A" }}</small>
+        </div>
+    {% empty %}
+        <div class="empty">
+            <h3>No posts yet!</h3>
+            <p>Share your first study resource on StudySphere.</p>
+            <a href="{% url 'home' %}">Create a Post</a>
+        </div>
+    {% endfor %}
+</div>
+</body>
+</html>

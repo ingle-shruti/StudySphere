@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications | StudySphere</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f7f8fc;
+            color: #20243a;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+        }
+
+        .header,
+        .notification {
+            padding: 22px;
+            margin-bottom: 16px;
+            background: white;
+            border: 1px solid #e8eaf3;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(34, 42, 80, 0.04);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #6558d9;
+        }
+
+        .muted {
+            color: #737b91;
+            font-size: 14px;
+        }
+
+        .unread {
+            border-left: 5px solid #6558d9;
+            background: #f5f3ff;
+        }
+
+        .read {
+            border-left: 5px solid #dfe2ec;
+        }
+
+        .button,
+        .back {
+            display: inline-block;
+            padding: 10px 15px;
+            border: 0;
+            border-radius: 9px;
+            background: #6558d9;
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .back {
+            background: white;
+            color: #5145bd;
+            border: 1px solid #dedcf8;
+        }
+
+        .empty {
+            padding: 30px;
+            text-align: center;
+            background: white;
+            border-radius: 14px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+<main class="container">
+
+    <section class="header">
+        <h1>🔔 Notifications</h1>
+
+        <p class="muted">
+            You have {{ unread_count }} unread notification{{ unread_count|pluralize }}.
+        </p>
+
+        <a href="{% url 'home' %}" class="back">
+            ← Back to StudySphere
+        </a>
+    </section>
+
+    {% for notification in notifications %}
+        <article class="notification {% if notification.is_read %}read{% else %}unread{% endif %}">
+            <h3>
+                {% if notification.is_read %}
+                    ✓
+                {% else %}
+                    🔵
+                {% endif %}
+                {{ notification.message }}
+            </h3>
+
+            <p class="muted">
+                {{ notification.created_at|date:"d M Y, h:i A" }}
+            </p>
+
+            <div class="actions">
+                {% if notification.link != "/" %}
+                    <a href="{{ notification.link }}" class="back">
+                        View
+                    </a>
+                {% endif %}
+
+                {% if not notification.is_read %}
+                    <form method="POST"
+                          action="{% url 'mark_notification_read' notification.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="button">
+                            Mark as Read
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </article>
+    {% empty %}
+        <section class="empty">
+            <h2>You're all caught up! 🎉</h2>
+            <p class="muted">You don't have any notifications yet.</p>
+        </section>
+    {% endfor %}
+
+</main>
+</body>
+</html>

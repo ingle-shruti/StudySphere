@@ -1,0 +1,541 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | StudySphere</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        nav {
+            background: #172554;
+            color: white;
+            padding: 18px 7%;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 8px 25px #0f172a12;
+            margin-bottom: 22px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            flex-wrap: wrap;
+            padding-bottom: 22px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #dbeafe;
+            color: #1d4ed8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        h2 {
+            font-size: 21px;
+            margin-top: 0;
+            margin-bottom: 22px;
+        }
+
+        .muted {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .stat {
+            background: #eff6ff;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1d4ed8;
+        }
+
+        .label {
+            margin-top: 7px;
+            color: #475569;
+        }
+
+        .details p {
+            padding: 12px 0;
+            margin: 0;
+            border-bottom: 1px solid #e2e8f0;
+            overflow-wrap: anywhere;
+        }
+
+        .details strong {
+            display: inline-block;
+            min-width: 130px;
+        }
+
+        .section-heading {
+            margin-top: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 15px;
+            font-family: inherit;
+            background: white;
+            color: #1e293b;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: 2px solid #bfdbfe;
+            border-color: #2563eb;
+        }
+
+        .help {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #b91c1c;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .messages {
+            list-style: none;
+            padding: 0;
+        }
+
+        .messages li {
+            background: #dcfce7;
+            color: #166534;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            border: none;
+            text-decoration: none;
+            background: #2563eb;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 9px;
+            margin: 6px 5px 0 0;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .secondary {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .skills {
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 7px 11px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 4px 4px 4px 0;
+            font-size: 13px;
+        }
+
+        footer {
+            text-align: center;
+            color: #64748b;
+            padding: 25px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 15px auto;
+                padding: 12px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat {
+                padding: 14px;
+            }
+
+            .details strong {
+                min-width: 0;
+                display: block;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <a href="{% url 'home' %}">📚 StudySphere</a>
+</nav>
+
+<main class="container">
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <!-- Profile Overview -->
+    <section class="card">
+
+        <div class="profile-header">
+            <div class="avatar">
+                {% if profile.uploaded_photo %}
+                    <img src="{{ profile.uploaded_photo.url }}" alt="Profile photo">
+                {% elif profile.profile_image %}
+                    <img src="{{ profile.profile_image }}" alt="Profile photo">
+                {% else %}
+                    👩‍🎓
+                {% endif %}
+            </div>
+
+            <div>
+                <h1>
+                    {% if profile.name %}
+                        {{ profile.name }}
+                    {% else %}
+                        {{ profile_user.username }}
+                    {% endif %}
+                </h1>
+
+                <p class="muted">
+                    {{ profile.branch|default:"Student" }}
+                    {% if profile.study_year %}
+                        · {{ profile.study_year }}
+                    {% endif %}
+                </p>
+
+                <p class="muted">
+                    Your learning journey, all in one place.
+                </p>
+            </div>
+        </div>
+
+        <div class="details">
+            <p>
+                <strong>Username:</strong>
+                {{ profile_user.username }}
+            </p>
+
+            <p>
+                <strong>Full Name:</strong>
+                {{ profile.name|default:"Not added yet" }}
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                {{ profile_user.email|default:"Not added yet" }}
+            </p>
+
+            <p>
+                <strong>College:</strong>
+                {{ profile.college|default:"Not added yet" }}
+            </p>
+
+            <p>
+                <strong>Branch:</strong>
+                {{ profile.branch|default:"Not added yet" }}
+            </p>
+
+            <p>
+                <strong>Study Year:</strong>
+                {{ profile.study_year|default:"Not added yet" }}
+            </p>
+
+            <p>
+                <strong>Member Since:</strong>
+                {{ profile_user.date_joined|date:"d M Y" }}
+            </p>
+        </div>
+
+        {% if profile.bio %}
+            <h2 class="section-heading">About Me</h2>
+            <p class="muted">{{ profile.bio|linebreaksbr }}</p>
+        {% endif %}
+
+        {% if profile.skills %}
+            <h2 class="section-heading">Skills</h2>
+            {% for skill in profile.skills.split %}
+                <span class="skills">{{ skill|cut:"," }}</span>
+            {% endfor %}
+        {% endif %}
+
+        <div class="stats">
+            <div class="stat">
+                <div class="number">{{ user_posts }}</div>
+                <div class="label">My Study Posts</div>
+            </div>
+
+            <div class="stat">
+                <div class="number">{{ total_bookmarks }}</div>
+                <div class="label">My Bookmarks</div>
+            </div>
+        </div>
+
+        <a href="{% url 'home' %}" class="btn">← Back to Home</a>
+        <a href="{% url 'my_posts' %}" class="btn secondary">My Posts</a>
+        <a href="{% url 'my_bookmarks' %}" class="btn secondary">My Bookmarks</a>
+        <a href="{% url 'dashboard' %}" class="btn secondary">Dashboard</a>
+
+    </section>
+
+    <!-- Edit Profile -->
+    <section class="card">
+
+        <h2>Edit Your Profile</h2>
+
+        <p class="muted">
+            Add your academic details and introduce yourself to the StudySphere community.
+        </p>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    maxlength="100"
+                    value="{{ profile.name }}"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="bio">About Me</label>
+                <textarea
+                    id="bio"
+                    name="bio"
+                    maxlength="500"
+                    placeholder="Write a short introduction about yourself..."
+                >{{ profile.bio }}</textarea>
+                <div class="help">Maximum 500 characters.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="college">College / University</label>
+                <input
+                    type="text"
+                    id="college"
+                    name="college"
+                    maxlength="200"
+                    value="{{ profile.college }}"
+                    placeholder="Enter your college name"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="branch">Branch / Department</label>
+                <input
+                    type="text"
+                    id="branch"
+                    name="branch"
+                    maxlength="100"
+                    value="{{ profile.branch }}"
+                    placeholder="e.g. Computer Science and Engineering"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="study_year">Study Year</label>
+                <select id="study_year" name="study_year">
+                    <option value="">Select your year</option>
+
+                    <option value="First Year"
+                        {% if profile.study_year == "First Year" %}selected{% endif %}>
+                        First Year
+                    </option>
+
+                    <option value="Second Year"
+                        {% if profile.study_year == "Second Year" %}selected{% endif %}>
+                        Second Year
+                    </option>
+
+                    <option value="Third Year"
+                        {% if profile.study_year == "Third Year" %}selected{% endif %}>
+                        Third Year
+                    </option>
+
+                    <option value="Fourth Year"
+                        {% if profile.study_year == "Fourth Year" %}selected{% endif %}>
+                        Fourth Year
+                    </option>
+
+                    <option value="Graduate"
+                        {% if profile.study_year == "Graduate" %}selected{% endif %}>
+                        Graduate
+                    </option>
+
+                    <option value="Other"
+                        {% if profile.study_year == "Other" %}selected{% endif %}>
+                        Other
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="skills">Skills</label>
+                <input
+                    type="text"
+                    id="skills"
+                    name="skills"
+                    maxlength="300"
+                    value="{{ profile.skills }}"
+                    placeholder="Java, HTML, CSS, Django"
+                >
+                <div class="help">Separate skills with commas.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="profile_image">Profile Image URL (optional)</label>
+                <input
+                    type="url"
+                    id="profile_image"
+                    name="profile_image"
+                    value="{{ profile.profile_image }}"
+                    placeholder="https://example.com/photo.jpg"
+                >
+                <div class="help">
+                    Use a direct image URL, or upload a photo below.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="uploaded_photo">Upload Profile Photo</label>
+                <input
+                    type="file"
+                    id="uploaded_photo"
+                    name="uploaded_photo"
+                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                >
+                <div class="help">JPG, PNG, or WEBP; maximum 5 MB.</div>
+            </div>
+
+            <button type="submit" class="btn">Save Profile</button>
+        </form>
+
+    </section>
+
+</main>
+
+<footer>
+    © 2026 StudySphere · Learn Together. Grow Together.
+</footer>
+
+</body>
+</html>

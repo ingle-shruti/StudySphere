@@ -1,0 +1,50 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="max-width: 850px; margin: 35px auto; padding: 20px;">
+
+    <a href="{% url 'home' %}" style="text-decoration: none;">
+        ← Back to Home
+    </a>
+
+    <article style="margin-top: 20px; padding: 28px; background: white; border: 1px solid #e5e7eb; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+
+        <span style="display: inline-block; padding: 5px 10px; background: #eff6ff; color: #1d4ed8; border-radius: 20px; font-size: 12px;">
+            {{ post.subject|default:"General Study" }}
+        </span>
+
+        <h1 style="font-size: 28px; margin: 18px 0 10px; overflow-wrap: anywhere;">
+            {{ post.title }}
+        </h1>
+
+        <div style="color: #667085; font-size: 13px; margin-bottom: 22px;">
+            Posted by {{ post.author }}
+            {% if post.created_at %}
+                · {{ post.created_at|date:"d M Y, h:i A" }}
+            {% endif %}
+        </div>
+
+        <div style="font-size: 16px; line-height: 1.8; white-space: pre-wrap; overflow-wrap: anywhere;">
+            {{ post.content }}
+        </div>
+
+        {% if post.pdf %}
+        <div style="margin-top: 25px;">
+            <a href="{{ post.pdf.url }}" target="_blank" rel="noopener noreferrer">
+                📄 View / Download PDF
+            </a>
+        </div>
+        {% endif %}
+
+        {% if request.user == post.author or request.user.is_superuser %}
+        <div style="margin-top: 25px;">
+            <a href="{% url 'edit_post' post.id %}">
+                Edit Post
+            </a>
+        </div>
+        {% endif %}
+
+    </article>
+</div>
+{% endblock %}
