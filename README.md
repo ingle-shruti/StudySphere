@@ -78,8 +78,9 @@ Open http://127.0.0.1:8000/ in your browser.
 
 ## 📸 Screenshots
 
-Screenshots of the application will be added here.
+### Student Dashboard
 
+![StudySphere Dashboard](screenshots/dashboard.png)
 ## 🎯 Project Objective
 
 The goal of StudySphere is to provide students with a platform to share educational content and participate in a student learning community.
